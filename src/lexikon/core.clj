@@ -118,7 +118,7 @@
 ;; TODO: meditate
 (def ^:dynamic *warn-on-late-eval* true)
 
-(defmacro print-late-eval-warning [line x]
+(defmacro ^:no-doc print-late-eval-warning [line x]
   `(do (println "*** Warning ***")
        (println "@" (format "%s:%s" *file* ~line))
        (println (str \' ~x \')

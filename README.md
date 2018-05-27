@@ -1,4 +1,4 @@
-# [lexikon](https://www.youtube.com/watch?v=_QQf9uKgiwU)
+# [lexikon](https://www.youtube.com/watch?v=wkNMf9wsy5Y)
 
 *Black Smif-N-Wessun (comin to shake ya frame)*\
 *Remember the name (nothin change)*\
@@ -20,6 +20,7 @@
   (:require [lexikon.core :refer :all]))
 ```
 
+## [API doc](https://tristefigure.github.io/lexikon/)
 
 ## A note on the lexical environment in Clojure
 
@@ -35,9 +36,7 @@ To summarize, a lexical environment is a map binding symbols (in code) to their 
 
 ### in macros
 
-Since the lexical environment includes runtime values, it is only available at runtime in its full form. However, this can make writing macros that manipulate the lexical environment difficult, and this is why `lexical-context` does not behave the same way depending on whether it is called from a macro or a normal form. In a macro, it will expand to code that will yield the lexical environement in the expansion rather than in the macro. Observe:
-
-Use 
+Since the lexical environment includes runtime values, it is only available at runtime in its full form. However, this can make writing macros that manipulate the lexical environment difficult, and this is why `lexical-context` does not behave the same way depending on whether it is called from a macro or a normal form. In a macro, it will expand to code that will yield the lexical environment in the expansion rather than in the macro. Observe:
 
 ```clojure
 (defmacro m []
@@ -109,7 +108,7 @@ Lower-level functions used by this library.
 
 ## License
 
-Copyright © 2018 FIXME
+Copyright © 2018 TristeFigure
 
 Distributed under the Eclipse Public License either version 1.0 or (at
 your option) any later version.
