@@ -93,17 +93,17 @@ Like `lexical-map`, `let-map` can accept a symbol as input map provided it will 
 Lower-level functions used by this library.
 
 ```clojure
-(context! :a {'a 123})
-(context! :a 'b 456)
+(context! :ctx {'a 123})
+(context! :ctx 'b 456)
 
-(context :a)
+(context :ctx)
 ;; => [{'a 123 'b 456}] 
 
-(binding-context :a
+(binding-context :ctx
   (+ a b))
 ;; => 579
 
-(delete-context! :a)
+(delete-context! :ctx)
 ```
 
 ## License
