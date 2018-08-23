@@ -40,9 +40,18 @@ Since the lexical environment includes runtime values, it is only available at r
 
 ```clojure
 (defmacro m []
-  (lexical-context)             ; {a 1}
-  (lexical-context :local true) ; {&form ... &env ... ...}
-  nil)
+  (let [b 2]
+    ;; at macroexpansion-time
+    (println (lexical-context))
+    ;;   {(quote a) a}
+    (println (lexical-context :local true))
+    ;;   {&form (m)
+    ;;    &env {a #object[clojure.lang.Compiler$LocalBinding...]}
+    ;;    b 2}
+    
+    ;; at runtime
+    `(println (lexical-context))
+    ;;   {a 1}))
 
 (let [a 1]
   (m))
@@ -66,6 +75,7 @@ Instead of a vector of symbols, you can also pass a symbol provided it will reso
 
 (binding-stored-locals :key
   (println "unstored:" a))
+;; unstored: 1
 ```
 
 ## `lexical-eval`
@@ -86,7 +96,7 @@ Evaluate code in the local lexical context.
 => [1 2]
 ```
 
-Like `lexical-map`, `let-map` can accept a symbol as input map provided it will resolve to a map binding symbols to values at runtime. Set `*warn-on-late-eval*` to `false` to suppress the warning this will generate.
+Like `lexical-map`, `letmap` can accept a symbol as input map provided it will resolve to a map binding symbols to values at runtime. Set `*warn-on-late-eval*` to `false` to suppress the warning this will generate.
 
 ## Contexts
 
