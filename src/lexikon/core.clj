@@ -42,33 +42,21 @@
   (swap! contexts dissoc k)
   nil)
 
-(defmacro binding-context
-  "Retrieves a stored lexical context from memory and binds it using
-  `let`.
-
-  ```clojure
-  (context! :k {'a 1})
-
-  (binding-context :k
-    (inc a))
-  => 2
-  ```"
-  [key & body]
-  (let [locals (or (->> (context key)
-                        keys
-                        (map #(-> % name symbol))
-                        vec)
-                   [])]
-    `(let ~(vec (mapcat (fn [l]
-                          [l `(context ~key '~l)])
-                        locals))
-       ~@body)))
+(defmacro lexical-resolve
+  "Resolve symbol in the current or given lexical context."
+  ([x] `(lexical-resolve (lexical-context) ~x))
+  ([lex x]
+   (let [x (if (symbol? x)
+             `(get ~lex '~x)
+             x)]
+     `(get ~lex ~x))))
 
 (defn- dequote [code]
   (if (and (seq? code) (-> code first (= 'quote)))
     (second code)
     code))
 
+;; TODO: add an :unquoted-keys opt to avoid `'~sym.
 (defmacro lexical-context
   "Returns the current lexical context as a map from symbols to
   values. In macros (or anywhere `&env` is a local in scope),
@@ -94,14 +82,38 @@
          (map #(vector `(quote ~%) %))
          (into {}))))
 
+(defmacro binding-context
+  "Retrieves a stored lexical context from memory and binds it using
+  `let`.
+
+  ```clojure
+  (context! :k {'a 1})
+
+  (binding-context :k
+    (inc a))
+  => 2
+
+  Note: you can only bind a context if its key is known at compile time.
+  ```"
+  [k & body]
+  (let [locals (or (->> (context k)
+                        keys
+                        (map #(-> % name symbol))
+                        vec)
+                   [])]
+    `(let ~(vec (mapcat (fn [l]
+                          [l `(context ~k '~l)])
+                        locals))
+       ~@body)))
+
 (defmacro lexical-eval
   "Evaluates code in the given lexical context. If no context is
   passed, [[lexical-context]] is used.
 
   ```clojure
-  (let [a 1]
-    (eval '(inc a))           ; CompilerException:
-                              ;   Unable to resolve symbol: a
+  (let [a 1]                  ; CompilerException:
+    (eval '(inc a))           ; Unable to resolve symbol: a in this context
+
     (lexical-eval (inc a))    ; => 2
     (lexical-eval {'a 22} a)) ; => 22
   ```"

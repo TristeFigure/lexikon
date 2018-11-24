@@ -17,6 +17,18 @@
   (delete-context! :k)
   (is (nil? (context :k))))
 
+(deftest test-lexical-resolve
+  (let [x 1
+        the-sym 'x
+        the-runtime-sym (symbol "abc")
+        abc :def]
+    (is (= 1    (lexical-resolve 'x)))
+    (is (= nil  (lexical-resolve x)))
+    (is (= 'x   (lexical-resolve 'the-sym)))
+    (is (= 1    (lexical-resolve the-sym)))
+    (is (= 'abc (lexical-resolve 'the-runtime-sym)))
+    (is (= :def (lexical-resolve the-runtime-sym)))))
+
 (deftest test-binding-context
   (delete-context! :key)
   (context! :key '{x 1 y 2})

@@ -12,7 +12,7 @@
 ## Usage
 
 ```clojure
-[lexikon "0.1.0"]
+[lexikon "0.2.0"]
 ```
 
 ```clojure
@@ -86,6 +86,16 @@ Evaluate code in the local lexical context.
 (let [a 1]
   (lexical-eval '(+ 1 a)))
 ; => 2
+```
+
+## `lexical-resolve`
+
+Resolve a symbol in the current or given lexical context.
+
+```clojure
+(let [a 1]
+  (lexical-resolve 'a))
+; => 1
 ```
 
 ## `letmap`
