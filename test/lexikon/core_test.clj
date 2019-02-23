@@ -38,12 +38,6 @@
     (context! :key {:x 1 :y 2})
     (is (= [1 2] (eval '(lexikon.core/binding-context :key [x y]))))))
 
-(defmacro expand-to-litteral-map []
-  '{c 3})
-
-(defmacro expand-to-litteral-vector []
-  '[a b c])
-
 (defn f []
   (lexical-context))
 
@@ -59,6 +53,11 @@
 (defmacro mmmm []
   `(f))
 
+(defmacro mmmmm []
+  `(let [~'d 4]
+     (dissoc (lexical-context :local true)
+             '&form '&env)))
+
 (def ^:private lc-results
   (let [a 1 b 2 c 3]
     [(lexical-context)
@@ -67,16 +66,31 @@
      (mm)
      (mmm)
      (mmmm)
+     (mmmmm)
      (macroexpand '(lexical-context))]))
 
 (deftest test-lexical-context
-  (testing "litteral"          (is (= '{a 1 b 2 c 3} (get lc-results 0))))
-  (testing "fn"                (is (= {}             (get lc-results 1))))
-  (testing "macro litteral"    (is (= '{a 1 b 2 c 3} (get lc-results 2))))
-  (testing "macro backtick"    (is (= '{a 1 b 2 c 3} (get lc-results 3))))
-  (testing "macro fn"          (is (= {}             (get lc-results 4))))
-  (testing "macro backtick fn" (is (= {}             (get lc-results 5))))
-  (testing "macroexpand"       (is (= {}             (get lc-results 6)))))
+  (testing "litteral"             (is (= '{a 1 b 2 c 3}     (get lc-results 0))))
+  (testing "fn"                   (is (= {}                 (get lc-results 1))))
+  (testing "macro litteral"       (is (= '{a 1 b 2 c 3}     (get lc-results 2))))
+  (testing "macro backtick"       (is (= '{a 1 b 2 c 3}     (get lc-results 3))))
+  (testing "macro fn"             (is (= {}                 (get lc-results 4))))
+  (testing "macro fn backtick"    (is (= {}                 (get lc-results 5))))
+  (testing "macro local backtick" (is (= '{a 1 b 2 c 3 d 4} (get lc-results 6))))
+  (testing "macroexpand"          (is (= {}                 (get lc-results 7))))
+
+  (testing "when :keys and :vals are :quoted, :evaled or :doubly-quoted"
+    (let [a 1]
+      (let [lc (lexical-context :keys :doubly-quoted :vals :quoted)]
+        (is (= {''a 'a} lc)))
+      (let [lc (lexical-context :keys :evaled :vals :doubly-quoted)]
+        (is (= {1 ''a} lc))))))
+
+(defmacro expand-to-litteral-vector []
+  '[a b c])
+
+(defmacro expand-to-litteral-map []
+  '{c 3})
 
 (deftest test-lexical-map
   (let [a 1 b 2 c 3]

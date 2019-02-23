@@ -64,6 +64,10 @@
   of the expanded form rather than the context of the macro itself.
   Use `(lexical-context :local true)` to override this behavior.
 
+  You can also use the `:keys` and `:vals` options to specify how they
+  should be processed (possible values: `:quoted`, `:doubly-quoted` or
+  `:evaled`).
+
   ```clojure
   (let [a 1 b 2 c 3]
     (lexical-context))
@@ -73,14 +77,30 @@
   (if (and (or (contains? &env '&env))
            (not (:local opts)))
     ;; then we are in the context of a macro
-    `(->> (keys ~'&env)
-          (map #(vector `(quote ~%) %))
-          (into {}))
+    (let [kf (case (get opts :keys :quoted)
+               :quoted        '#(do `(quote ~%))
+               :doubly-quoted '#(do `(quote (quote ~%)))
+               :evaled        'identity)
+          vf (case (get opts :vals :evaled)
+               :quoted        '#(do `(quote ~%))
+               :doubly-quoted '#(do `(quote (quote ~%)))
+               :evaled        'identity) ]
+      `(->> (keys ~'&env)
+            (map (juxt ~kf ~vf))
+            (into {})))
     ;; else we are in the context of a normal form or want to get the
     ;; lexical context of the macro we are in.
-    (->> (keys &env)
-         (map #(vector `(quote ~%) %))
-         (into {}))))
+    (let [kf (case (get opts :keys :quoted)
+               :quoted        #(do `(quote ~%))
+               :doubly-quoted #(do `(quote (quote ~%)))
+               :evaled       identity)
+          vf (case (get opts :vals :evaled)
+               :quoted        #(do `(quote ~%))
+               :doubly-quoted #(do `(quote (quote ~%)))
+               :evaled        identity) ]
+      (->> (keys &env)
+           (map (juxt kf vf))
+           (into {})))))
 
 (defmacro binding-context
   "Retrieves a stored lexical context from memory and binds it using
@@ -153,6 +173,8 @@
                                                 :keywords %)))
                          first vector)))
 
+;; TODO: Maybe lexical-map should raise an error when the key does not exist.
+;;       Adapt other fns in lexikon as well if necessary.
 (defmacro lexical-map
   "Turns a collection of symbols into a map of symbols to their value
   in the current lexical context.

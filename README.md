@@ -12,7 +12,7 @@
 ## Usage
 
 ```clojure
-[lexikon "0.2.0"]
+[lexikon "0.2.1"]
 ```
 
 ```clojure
@@ -48,7 +48,7 @@ Since the lexical environment includes runtime values, it is only available at r
     ;;   {&form (m)
     ;;    &env {a #object[clojure.lang.Compiler$LocalBinding...]}
     ;;    b 2}
-    
+
     ;; at runtime
     `(println (lexical-context))
     ;;   {a 1}))
@@ -117,7 +117,7 @@ Lower-level functions used by this library.
 (context! :ctx 'b 456)
 
 (context :ctx)
-;; => [{'a 123 'b 456}] 
+;; => [{'a 123 'b 456}]
 
 (binding-context :ctx
   (+ a b))

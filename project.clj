@@ -1,4 +1,4 @@
-(defproject lexikon "0.2.0"
+(defproject lexikon "0.2.1"
   :description "Reify, manipulate and replay the lexical environment in Clojure"
   :url "https://github.com/TristeFigure/lexikon"
   :license {:name "Eclipse Public License"
