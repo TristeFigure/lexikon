@@ -1,4 +1,4 @@
-# [lexikon](https://www.youtube.com/watch?v=wkNMf9wsy5Y)
+# [lexikon](https://www.youtube.com/watch?v=ciEhswFOC3s)
 
 *Black Smif-N-Wessun (comin to shake ya frame)*\
 *Remember the name (nothin change)*\
@@ -7,6 +7,7 @@
 *Is how we stay ahead of the game, like links and change*\
 *(To maintain is the main thing) The name change, the game change*\
 *(But we still the same) Just elevated to a higher plane* \
+
 *Commin to shake ya brain, commin to shake ya frame*
 
 ## Usage
