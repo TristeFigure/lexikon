@@ -6,7 +6,7 @@
 *Duck Down when we take aim, remainin on point*\
 *Is how we stay ahead of the game, like links and change*\
 *(To maintain is the main thing) The name change, the game change*\
-*(But we still the same) Just elevated to a higher plane* \
+*(But we still the same) Just elevated to a higher plane* 
 
 *Commin to shake ya brain, commin to shake ya frame*
 
